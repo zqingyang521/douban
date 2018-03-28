@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 import { HttpService, AppGloal } from '../../providers/http/http';
 
+declare let baidumap_location;
+
 @IonicPage()
 @Component({
   selector: 'page-home',
@@ -17,6 +19,12 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,public httpService: HttpService) {
     this.getInTheaters();
+
+    baidumap_location.getCurrentPosition(result=>{
+      alert(JSON.stringify(result, null, 4));
+    },error=>{
+
+    });
   }
 
   getInTheaters() {

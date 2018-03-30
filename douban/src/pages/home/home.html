@@ -1,15 +1,27 @@
-<ion-header>
+<ion-header class="primary-bg" no-border>
   <ion-navbar>
-    <ion-title>正在上映</ion-title>
+    <ion-title>{{city}}正在上映的电影</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-list>
-    <ion-item *ngFor="let item of inTheaters">{{item.title}}</ion-item>
+    <ion-item *ngFor="let item of inTheaters">
+      <ion-avatar  item-start>
+        <img src="{{item.images.large}}">
+      </ion-avatar>
+      <h2>{{item.title}}</h2>
+      <span class="span-text" *ngFor="let cast of item.casts" >{{cast.name}}&nbsp;&nbsp;</span>
+      <p class="span-text" item-end>{{item.mainland_pubdate}}上映</p>
+    </ion-item>
   </ion-list>
  
   <ion-infinite-scroll (ionInfinite)="$event.waitFor(doInfinite())">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    <ion-infinite-scroll-content loadingSpinner="bubbles"></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

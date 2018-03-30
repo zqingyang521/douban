@@ -17,14 +17,26 @@ export class HomePage {
 
   count = 10;
 
+  city: string;
+
+  loadMore: boolean = true;
+
   constructor(public navCtrl: NavController,public httpService: HttpService) {
+    this.getCity(httpService);
     this.getInTheaters();
+  }
 
-    baidumap_location.getCurrentPosition(result=>{
-      alert(JSON.stringify(result, null, 4));
-    },error=>{
-
-    });
+  getCity(httpService){
+    if('undefined' != typeof baidumap_location) {
+      baidumap_location.getCurrentPosition(result=>{
+        this.city = result.city;
+      },error=>{
+        this.city = '大连';
+        httpService.toast(error,null);
+      });
+    } else {
+      this.city = '大连';
+    }
   }
 
   getInTheaters() {
@@ -32,7 +44,7 @@ export class HomePage {
       //固定值0b2bdeda43b5688921839c8ecb20399b
       apikey: '0b2bdeda43b5688921839c8ecb20399b',
       //所在城市，例如北京、上海等
-      city: '上海',
+      city: this.city,
       //分页使用，表示第几页
       start: this.start,
       //分页使用，表示数量
@@ -43,25 +55,38 @@ export class HomePage {
       udid: ''
     }
     this.httpService.httpGet(AppGloal.API.getTheaters,params,res =>{
-      debugger;
-     
+      if(res.subjects.length < this.count) {
+        this.loadMore = false;
+      }
       if(this.start == 1) {
         this.inTheaters = res.subjects;
+        this.loadMore = true;
       }else{
-        this.inTheaters.push(res.subjects);
+        this.inTheaters = this.inTheaters.concat(res.subjects);
       }
     });
   }
 
+  doRefresh(refresher){
+    setTimeout(() => {
+      this.start = 1;
+      this.getInTheaters();
+      refresher.complete();
+    }, 1000);
+  }
+
   doInfinite(): Promise<any> {
-    console.log('Begin async operation');
-    this.start++;
     return new Promise((resolve) => {
       setTimeout(() => {
-        this.getInTheaters();
-        resolve();
-      }, 500);
-    })
+        if(this.loadMore){
+          this.start = this.count + this.start;
+          this.getInTheaters();
+          resolve();
+        } else {
+          resolve();
+        }
+      }, 1000);
+    });
   }
 
 }

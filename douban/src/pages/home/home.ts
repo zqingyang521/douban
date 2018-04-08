@@ -88,5 +88,8 @@ export class HomePage {
       }, 1000);
     });
   }
+  goCityPage(){
+    this.navCtrl.push('CitySelectPage');
+  }
 
 }

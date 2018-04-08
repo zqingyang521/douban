@@ -1,7 +1,12 @@
 <ion-header class="primary-bg" no-border>
-  <ion-navbar>
-    <ion-title>{{city}}正在上映的电影</ion-title>
-  </ion-navbar>
+    <ion-navbar>
+      <ion-buttons start>
+        <button ion-button icon-only (click)="goCityPage()">
+          <ion-icon name="weizhi"></ion-icon>
+        </button>
+      </ion-buttons>
+      <ion-title>{{city}}</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content>
@@ -16,8 +21,11 @@
         <img src="{{item.images.large}}">
       </ion-avatar>
       <h2>{{item.title}}</h2>
+      <span class="span-text">导演:&nbsp;&nbsp;</span>
+      <span class="span-text" *ngFor="let dir of item.directors" >{{dir.name}}&nbsp;&nbsp;</span>
+      <span class="span-text">演员:&nbsp;&nbsp;</span>
       <span class="span-text" *ngFor="let cast of item.casts" >{{cast.name}}&nbsp;&nbsp;</span>
-      <p class="span-text" item-end>{{item.mainland_pubdate}}上映</p>
+      <p item-end>{{item.rating.average}}分</p>
     </ion-item>
   </ion-list>
  

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, IonicPage } from 'ionic-angular';
 import { HttpService, AppGloal } from '../../providers/http/http';
+import { Events } from 'ionic-angular';
 
 declare let baidumap_location;
 
@@ -21,9 +22,18 @@ export class HomePage {
 
   loadMore: boolean = true;
 
-  constructor(public navCtrl: NavController,public httpService: HttpService) {
+  constructor(public navCtrl: NavController, public httpService: HttpService, public events: Events) {
     this.getCity(httpService);
     this.getInTheaters();
+    this.initEvent(events);
+  }
+
+  initEvent(events) {
+    events.subscribe('city:selected', cityObj => {
+      this.city = cityObj.name;
+      this.start = 1;
+      this.getInTheaters();
+    });
   }
 
   getCity(httpService){

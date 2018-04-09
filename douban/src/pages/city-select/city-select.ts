@@ -1,6 +1,7 @@
 import { CityProvider } from './../../providers/city/cityprovider';
 import { Component, ViewChildren, ViewChild } from '@angular/core';
 import { NavController, Content, IonicPage } from 'ionic-angular';
+import { Events } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -17,7 +18,7 @@ export class CitySelectPage {
   @ViewChildren('cityGroup') cityGroup;
   @ViewChild(Content) content: Content;
 
-  constructor(public navCtrl: NavController, public cityProvider: CityProvider) {
+  constructor(public navCtrl: NavController, public cityProvider: CityProvider,public events: Events) {
     this.indexes = cityProvider.getIndexes();
     this.cities = cityProvider.getGroupCities();
   }
@@ -51,8 +52,8 @@ export class CitySelectPage {
   }
  
   citySelect(city) {
-    console.log(JSON.stringify(city));
-    window.localStorage["cache_currentCity"] = JSON.stringify(city);
+    this.events.publish('city:selected', city);
+    this.navCtrl.pop();
   }
 
   getItems(e) {

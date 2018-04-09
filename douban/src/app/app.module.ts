@@ -6,7 +6,7 @@ import { MyApp } from './app.component';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { HttpService } from '../providers/http/http';
-
+import { EmojiProvider } from '../providers/chat/emoji';
 @NgModule({
   declarations: [
     MyApp
@@ -24,7 +24,8 @@ import { HttpService } from '../providers/http/http';
     StatusBar,
     SplashScreen,
     HttpService,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    EmojiProvider
   ]
 })
 export class AppModule {}

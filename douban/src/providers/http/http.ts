@@ -5,7 +5,7 @@ import { LoadingController, AlertController, ToastController } from "ionic-angul
 @Injectable()
 export class AppGloal {
 
-    //參考鏈接https://github.com/jokermonn/-Api/blob/master/DoubanMovie.md
+    //参考链接https://github.com/jokermonn/-Api/blob/master/DoubanMovie.md https://www.kancloud.cn/turing/web_api/522989
 
     static cache: any = {
 
@@ -14,8 +14,9 @@ export class AppGloal {
     static domain = "https://api.douban.com";
     
     static API = {
-            //正在上映的電影列表
-            getTheaters: '/v2/movie/in_theaters'
+            //正在上映的电影列表
+            getTheaters: '/v2/movie/in_theaters',
+            getTuLingInfo: 'http://www.tuling123.com/openapi/api'
     }
 };
 
@@ -27,7 +28,7 @@ export class HttpService {
         public alertCtrl: AlertController,
         public toastCtrl: ToastController){}
 
-    //对参数解碼
+    //对参数解码
     encode(params) {
         let str = '';
         if(params) {
@@ -68,7 +69,11 @@ export class HttpService {
         if(loader) {
             loading.present();
         }
-        this.http.post(AppGloal.domain + url , params)
+        let apiUrl = url;
+        if(url != AppGloal.API.getTuLingInfo) {
+            apiUrl = AppGloal.domain + url;
+        }
+        this.http.post(apiUrl , params)
             .toPromise()
             .then(res => {
                 let d = res.json();

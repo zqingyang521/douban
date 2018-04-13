@@ -82,6 +82,7 @@ export class ContactPage {
       userAvatar: this.user.avatar,
       toUserId: this.toUser.id,
       time: Date.now(),
+      code: '',
       message: this.editorMsg,
       status: 'pending'
     };

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Events } from 'ionic-angular';
 import { map } from 'rxjs/operators/map';
 import { Observable } from "rxjs/Observable";
+import { HttpService, AppGloal } from '../../providers/http/http';
 
 export class ChatMessage {
   messageId: string;
@@ -9,6 +10,7 @@ export class ChatMessage {
   userName: string;
   userAvatar: string;
   toUserId: string;
+  code: string;
   time: number | string;
   message: string;
   status: string;
@@ -23,10 +25,10 @@ export class UserInfo {
 @Injectable()
 export class ChatService {
 
-  constructor(public events: Events) {
+  constructor(public events: Events, public httpService: HttpService) {
   }
 
-  mockNewMsg(msg) {
+  mockNewMsg(code, msg) {
     const mockMsg: ChatMessage = {
       messageId: Date.now().toString(),
       userId: '210000198410281948',
@@ -34,24 +36,16 @@ export class ChatService {
       userAvatar: './assets/imgs/to-user.jpg',
       toUserId: '140000198202211138',
       time: Date.now(),
-      message: msg.message,
+      code: code,
+      message: msg,
       status: 'success'
     };
-
-    setTimeout(() => {
-      this.events.publish('chat:received', mockMsg, Date.now())
-    }, Math.random() * 1800)
+    this.events.publish('chat:received', mockMsg, Date.now())
   }
-
-  // getMsgList(): Observable<ChatMessage[]> {
-  //   const msgListUrl = './assets/mock/msg-list.json';
-  //   return this.http.get<any>(msgListUrl)
-  //   .pipe(map(response => response.array));
-  // }
 
   sendMsg(msg: ChatMessage) {
     return new Promise(resolve => setTimeout(() => resolve(msg), Math.random() * 1000))
-    .then(() => this.mockNewMsg(msg));
+    .then(() => this.getTuLingInfo(msg));
   }
 
   getUserInfo(): Promise<UserInfo> {
@@ -61,6 +55,16 @@ export class ChatService {
       avatar: './assets/imgs/user.jpg'
     };
     return new Promise(resolve => resolve(userInfo));
+  }
+
+  getTuLingInfo(msg) {
+    var params = {
+      key: '1dab66be476347f29a70767dbfff22bc',
+      info: msg.message,
+    }
+    this.httpService.httpPost(AppGloal.API.getTuLingInfo,params,res =>{
+        this.mockNewMsg(res.code, res.text);
+    });
   }
 
 }
